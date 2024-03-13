@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.example.personalizedcontactsmanagementapp4.ContactModel;
@@ -33,8 +35,10 @@ public class ContactDAO {
         }
     }
 
+
     public int updateContact(ContactModel contact) throws SQLException {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rowsAffected = 0;
 
         try {
             ContentValues values = new ContentValues();
@@ -43,14 +47,32 @@ public class ContactDAO {
             values.put(ContactContract.ContactEntry.COLUMN_PHONE_NUMBER, contact.getPhoneNumber());
             values.put(ContactContract.ContactEntry.COLUMN_BIRTHDAY, contact.getBirthday());
 
-            return db.update(ContactContract.ContactEntry.TABLE_NAME,
+            // Log the values being updated
+            Log.d("ContactDAO", "Updating contact with ID: " + contact.getId());
+            Log.d("ContactDAO", "New contact details: " + contact.toString());
+
+            // Perform the update operation
+            rowsAffected = db.update(ContactContract.ContactEntry.TABLE_NAME,
                     values,
                     ContactContract.ContactEntry.COLUMN_ID + " = ?",
                     new String[]{String.valueOf(contact.getId())});
+
+            // Log the number of rows affected
+            Log.d("ContactDAO", "Rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            // Handle any exceptions that occur during the update operation
+            e.printStackTrace();
         } finally {
-            db.close();
+            // Close the database connection
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
         }
+
+        return rowsAffected;
     }
+
+
 
     public int deleteContact(long contactId) throws SQLException {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

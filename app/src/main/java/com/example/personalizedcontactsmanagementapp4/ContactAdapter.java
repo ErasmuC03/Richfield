@@ -3,6 +3,7 @@ package com.example.personalizedcontactsmanagementapp4;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     public ContactAdapter(ContactsListActivity deleteListener) {
     }
+
+    public void updateContactsList(List<ContactModel> updatedContacts) {
+        this.contacts = updatedContacts;
+        notifyDataSetChanged(); // Notify adapter that dataset has changed
+    }
+
 
     // Interface for delete button click listener
     public interface OnDeleteButtonClickListener {
@@ -89,6 +96,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         TextView textViewName, textViewEmail, textViewPhoneNumber, textViewBirthday;
 
         public ContactViewHolder(@NonNull View itemView) {
+
             super(itemView);
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewEmail = itemView.findViewById(R.id.textViewEmail);
